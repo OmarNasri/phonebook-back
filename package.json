@@ -1,0 +1,25 @@
+{
+  "name": "phonebook-back",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "watch": "nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/OmarNasri/phonebook-back.git"
+  },
+  "author": "Omar Nasri",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.17.3"
+  },
+  "devDependencies": {
+    "commitizen": "^4.2.4",
+    "nodemon": "^2.0.15"
+  }
+}
