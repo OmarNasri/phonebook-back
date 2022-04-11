@@ -27,6 +27,7 @@ let persons = [
   ]
 app.use(bodyParser.json())
 app.use(cors())
+app.use(express.static('build'))
 
 app.get('/api/persons', (req, res) => {
     res.json(persons)
