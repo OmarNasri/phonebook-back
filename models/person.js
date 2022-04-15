@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
 
-const url = 'mongodb+srv://admin:admin1@contacts.06oow.mongodb.net/fullstack-persons'
+const url = ''
 
 mongoose.connect(url)
 
