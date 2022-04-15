@@ -1,7 +1,17 @@
 const express = require('express')
 const bodyParser = require('body-parser')
-const app = express()
 const cors = require('cors')
+const Person = require('./models/person')
+const app = express()
+
+
+const formatPerson = (person) => {
+    return {
+    name: person.name,
+    number: person.number,
+    id: person.id
+    }
+  }
 
 let persons = [
     {
@@ -29,12 +39,16 @@ app.use(bodyParser.json())
 app.use(cors())
 app.use(express.static('build'))
 
-app.get('/api/persons', (req, res) => {
-    res.json(persons)
-})
-app.get('/', (req, res) => {
-    res.send('<h1>Hello World!</h1>')
-})
+
+app.get('/api/persons', (request, response) => {
+    Person
+        .find({})
+        .then(persons => {
+        response.json(persons.map(formatPerson))
+        })
+      })
+
+
 
 app.get('/api/persons/:id', (request, response) => {
     const id = Number(request.params.id)
@@ -46,33 +60,35 @@ app.get('/api/persons/:id', (request, response) => {
     }
   })
 
-//Toimivuus testatu REST clientillä.
+
 app.delete('/api/persons/:id', (request, response) => {
-    const id = Number(request.params.id)
-    persons = persons.filter(person => person.id !== id)
-  
+Person
+    .findByIdAndRemove(request.params.id)
+    .then(result => {
     response.status(204).end()
-  })    
+    })
+    .catch(error => {
+    response.status(400).send({ error: 'Wrong id' })
+    })
+})
+      
 
 app.post('/api/persons', (request, response) => {
-  const rID = Math.floor(Math.random() * 100000000);
-  const body = request.body
-  const exists = persons.find(persons => persons.name === body.name)
-  const person = {
-    name: body.name,
-    number: body.number,
-    id: rID
+    const body = request.body   
+    if(!body.name || !body.number){
+        return response.status(400).json({
+            error: 'name or number missing'
+        })
     }
-  
-    if(person.name === undefined || person.number === undefined){
-        return response.status(400).json({ error: 'content missing' })
-        }
-    if(exists){
-        return response.status(400).json({ error: 'name must be unique' })
-        }
-    
-    persons = persons.concat(person)   
-    response.json(person)
+    const person = new Person({
+        name: body.name,
+        number: body.number
+    })
+    person
+        .save()
+        .then(savedPerson => {
+            response.json(formatPerson(savedPerson))
+        })
 })
 
 const PORT = process.env.PORT || 3001
